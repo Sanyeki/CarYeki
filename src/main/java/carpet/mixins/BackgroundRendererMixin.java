@@ -32,17 +32,17 @@ public abstract class BackgroundRendererMixin {
         if (bl) {
             o = 1.0F;
             if (fluidState.matches(FluidTags.WATER)) {
-                o = 0.05F;
+                o = FogCommand.water;
                 if (entity instanceof ClientPlayerEntity) {
                     ClientPlayerEntity clientPlayerEntity = (ClientPlayerEntity)entity;
                     o -= clientPlayerEntity.method_3140() * clientPlayerEntity.method_3140() * 0.03F;
                     Biome biome = clientPlayerEntity.world.getBiome(new BlockPos(clientPlayerEntity));
                     if (biome == Biomes.SWAMP || biome == Biomes.SWAMP_HILLS) {
-                        o += 0.005F;
+                        o += FogCommand.waterBiome;
                     }
                 }
             } else if (fluidState.matches(FluidTags.LAVA)) {
-                o = 2.0F;
+                o = FogCommand.lava;
             }
 
             RenderSystem.fogDensity(o);
