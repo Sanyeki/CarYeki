@@ -529,6 +529,9 @@ public class CarpetSettings
     @Rule(desc = "fixes block placement rotation issue when player rotates quickly while placing blocks", category = BUGFIX)
     public static boolean placementRotationFix = false;
 
+    @Rule(desc = "Wither Boss does not shoot random charged wither skulls",category = BUGFIX)
+    public static boolean witherRandomSkulls = true;
+
     @Rule(
             desc = "Fixes leads breaking/becoming invisible in unloaded chunks",
             extra = "You may still get visibly broken leash links on the client side, but server side the link is still there.",
