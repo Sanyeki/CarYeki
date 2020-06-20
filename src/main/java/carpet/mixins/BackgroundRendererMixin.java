@@ -1,5 +1,7 @@
 package carpet.mixins;
 
+import carpet.commands.FogCommand;
+import carpet.script.CarpetEventServer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -22,9 +24,10 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(net.minecraft.client.render.BackgroundRenderer.class)
-public abstract class BackgroundRenderer {
+public abstract class BackgroundRendererMixin {
 
-    public static void applyFog(Camera camera, net.minecraft.client.render.BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+    @Inject(method = "applyFog", at = @At("HEAD"), cancellable = true)
+    private static void applyFog(Camera camera, net.minecraft.client.render.BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo callback) {
         FluidState fluidState = camera.getSubmergedFluidState();
         Entity entity = camera.getFocusedEntity();
         boolean bl = fluidState.getFluid() != Fluids.EMPTY;
@@ -60,8 +63,8 @@ public abstract class BackgroundRenderer {
                     r = g;
                 }
             } else if (thickFog) {
-                o = viewDistance * 0.05F;
-                r = Math.min(viewDistance, 192.0F) * 0.5F;
+                o = viewDistance * FogCommand.min;
+                r = Math.min(viewDistance, 192.0F) * FogCommand.max;
             } else if (fogType == net.minecraft.client.render.BackgroundRenderer.FogType.FOG_SKY) {
                 o = 0.0F;
                 r = viewDistance;
@@ -76,6 +79,7 @@ public abstract class BackgroundRenderer {
             RenderSystem.setupNvFogDistance();
         }
 
+        callback.cancel();
     }
 
 
